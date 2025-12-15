@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import type { ResumeData, AISettings, ResumeVersion } from './types';
 import { DEFAULT_SETTINGS, generateId } from './types';
 import { generateBaseResume, generateTailoredResume, extractATSKeywords } from './services/aiService';
+import { analyzeResume, type ResumeAnalysis } from './services/analysisService';
 import { ResumeTemplate } from './components/ResumeTemplate';
 import { SettingsModal } from './components/SettingsModal';
 import { VersionHistory } from './components/VersionHistory';
 import { ChangesView } from './components/ChangesView';
+import { AnalysisModal } from './components/AnalysisModal';
 import './App.css';
 
 // LocalStorage keys
@@ -31,6 +33,7 @@ function App() {
   const [currentVersion, setCurrentVersion] = useState<ResumeVersion | null>(null);
   const [showChanges, setShowChanges] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const resumeRef = useRef<HTMLDivElement>(null);
 
   // Load saved data on mount
@@ -191,6 +194,23 @@ function App() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate tailored resume');
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage('');
+    }
+  };
+
+  const handleAnalyzeResume = async () => {
+    if (!generatedResume) return;
+
+    setIsLoading(true);
+    setLoadingMessage('Performing smart analysis...');
+
+    try {
+      const result = await analyzeResume(generatedResume, jobDescription, settings);
+      setAnalysis(result);
+    } catch (err) {
+      setError('Analysis failed. Please try again.');
     } finally {
       setIsLoading(false);
       setLoadingMessage('');
@@ -455,14 +475,19 @@ function App() {
                     </button>
                   )}
                 </div>
-                <button className="btn-download" onClick={handleDownloadPDF}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7,10 12,15 17,10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                  </svg>
-                  Download PDF
-                </button>
+                <div className="toolbar-right" style={{ display: 'flex', gap: '8px' }}>
+                  <button className="btn-outline" onClick={handleAnalyzeResume} style={{ padding: '0.5rem 1rem' }}>
+                    ⚡ Analyze
+                  </button>
+                  <button className="btn-download" onClick={handleDownloadPDF}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7,10 12,15 17,10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download PDF
+                  </button>
+                </div>
               </div>
 
               {/* Changes Panel */}
@@ -496,6 +521,14 @@ function App() {
           settings={settings}
           onSave={handleSaveSettings}
           onClose={() => setShowSettings(false)}
+        />
+      )}
+
+      {/* Analysis Modal */}
+      {analysis && (
+        <AnalysisModal
+          analysis={analysis}
+          onClose={() => setAnalysis(null)}
         />
       )}
     </div>
