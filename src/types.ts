@@ -37,6 +37,19 @@ export interface Project {
 
 export type AIProvider = 'google' | 'cerebras' | 'mistral';
 
+// Resume version for history tracking
+export interface ResumeVersion {
+  id: string;
+  name: string;
+  timestamp: number;
+  data: ResumeData;
+  type: 'base' | 'tailored';
+  companyName?: string;
+  jobTitle?: string;
+  atsKeywords?: string[];
+  changes?: string[]; // AI-generated list of changes made
+}
+
 export interface AISettings {
   provider: AIProvider;
   googleApiKey: string;
@@ -74,3 +87,20 @@ export const MISTRAL_MODELS = [
   { value: 'mistral-medium-latest', label: 'Mistral Medium' },
   { value: 'mistral-large-latest', label: 'Mistral Large' },
 ];
+
+// Helper to generate unique IDs
+export function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// Helper to format timestamp
+export function formatTimestamp(ts: number): string {
+  const date = new Date(ts);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+
+  if (isToday) {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
