@@ -1,1346 +1,505 @@
-/* ========================================
-   MINIMALISTIC MONOCHROMATIC THEME
-   Modern Two-Panel Layout
-   ======================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
-
-:root {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-tertiary: #181818;
-  --bg-card: #141414;
-  --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --text-muted: #555555;
-  --border-color: #222222;
-  --border-light: #333333;
-  --accent: #ffffff;
-  --accent-dim: #666666;
-  --error: #ff4444;
-  --success: #22c55e;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'JetBrains Mono', monospace;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
-  line-height: 1.6;
-}
-
-/* ========================================
-   APP LAYOUT
-   ======================================== */
-
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ========================================
-   HEADER
-   ======================================== */
-
-.app-header {
-  padding: 1rem 2rem;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.logo-icon {
-  font-size: 1.5rem;
-  opacity: 0.8;
-}
-
-.logo-text {
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.provider-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.provider-badge:hover {
-  border-color: var(--border-light);
-}
-
-.badge-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--success);
-  border-radius: 50%;
-}
-
-.icon-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.icon-btn:hover {
-  border-color: var(--border-light);
-  color: var(--text-primary);
-}
-
-/* ========================================
-   TAB NAVIGATION (Mobile)
-   ======================================== */
-
-.tab-nav {
-  display: none;
-  padding: 1rem;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  gap: 0.5rem;
-}
-
-.tab-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tab-btn.active {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
-}
-
-.tab-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* ========================================
-   MAIN CONTENT
-   ======================================== */
-
-.main-content {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 0;
-}
-
-.panel {
-  height: calc(100vh - 65px);
-  overflow-y: auto;
-}
-
-.input-panel {
-  background: var(--bg-primary);
-  border-right: 1px solid var(--border-color);
-}
-
-.panel-inner {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.preview-panel {
-  background: #f5f5f5;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ========================================
-   CARDS
-   ======================================== */
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.card-header h3 {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-}
-
-.badge {
-  font-size: 0.6rem;
-  padding: 0.2rem 0.5rem;
-  background: var(--bg-tertiary);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.text-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.text-btn:hover {
-  color: var(--error);
-}
-
-.card textarea {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  padding: 1rem;
-  font-family: inherit;
-  font-size: 0.8rem;
-  resize: none;
-  line-height: 1.7;
-}
-
-.card textarea:focus {
-  outline: none;
-}
-
-.card textarea::placeholder {
-  color: var(--text-muted);
-}
-
-.card-footer {
-  padding: 0.5rem 1rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.saved-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.65rem;
-  color: var(--text-muted);
-}
-
-/* ========================================
-   TOGGLE
-   ======================================== */
-
-.toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  border-top: 1px solid var(--border-color);
-  cursor: pointer;
-}
-
-.toggle-label input {
-  display: none;
-}
-
-.toggle-switch {
-  width: 36px;
-  height: 20px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-light);
-  position: relative;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.toggle-switch::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  background: var(--text-muted);
-  top: 2px;
-  left: 2px;
-  transition: all 0.2s;
-}
-
-.toggle-label input:checked+.toggle-switch {
-  background: var(--text-primary);
-  border-color: var(--text-primary);
-}
-
-.toggle-label input:checked+.toggle-switch::after {
-  background: var(--bg-primary);
-  left: 18px;
-}
-
-.toggle-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.toggle-text span:first-child {
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.toggle-hint {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-}
-
-/* ========================================
-   BUTTONS
-   ======================================== */
-
-.action-buttons {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.btn-primary,
-.btn-outline,
-.btn-download {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.25rem;
-  font-family: inherit;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid;
-}
-
-.btn-primary {
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: transparent;
-  color: var(--text-primary);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--text-primary);
-  border-color: var(--border-light);
-}
-
-.btn-outline:hover:not(:disabled) {
-  border-color: var(--text-primary);
-}
-
-.btn-primary:disabled,
-.btn-outline:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.btn-download {
-  flex: none;
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  border-color: var(--text-primary);
-}
-
-.btn-download:hover {
-  background: transparent;
-  color: var(--text-primary);
-}
-
-.spinner-small {
-  width: 14px;
-  height: 14px;
-  border: 2px solid transparent;
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-/* ========================================
-   ERROR & LOADING
-   ======================================== */
-
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  background: rgba(255, 68, 68, 0.08);
-  border: 1px solid rgba(255, 68, 68, 0.3);
-  color: var(--error);
-  font-size: 0.75rem;
-}
-
-.loading-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-
-.loading-animation {
-  display: flex;
-  gap: 4px;
-}
-
-.loading-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--text-secondary);
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
-}
-
-.loading-dot:nth-child(1) {
-  animation-delay: -0.32s;
-}
-
-.loading-dot:nth-child(2) {
-  animation-delay: -0.16s;
-}
-
-@keyframes bounce {
-
-  0%,
-  80%,
-  100% {
-    transform: scale(0);
-  }
-
-  40% {
-    transform: scale(1);
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ========================================
-   PREVIEW
-   ======================================== */
-
-.preview-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.preview-toolbar h3 {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-}
-
-.resume-wrapper {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem;
-  background: #f5f5f5;
-}
-
-.empty-preview {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 2rem;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  opacity: 0.2;
-  margin-bottom: 1rem;
-}
-
-.empty-preview h3 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-secondary);
-}
-
-.empty-preview p {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  max-width: 280px;
-}
-
-/* ========================================
-   MODAL
-   ======================================== */
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.modal-content {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  width: 100%;
-  max-width: 420px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.modal-header h2 {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.5rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-}
-
-.close-btn:hover {
-  color: var(--text-primary);
-}
-
-.provider-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.provider-tabs .tab {
-  flex: 1;
-  padding: 0.875rem 1rem;
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.provider-tabs .tab:hover {
-  color: var(--text-secondary);
-}
-
-.provider-tabs .tab.active {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
-}
-
-.provider-settings {
-  padding: 1.25rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.6rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 0.625rem 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  font-family: inherit;
-  font-size: 0.75rem;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--border-light);
-}
-
-.form-group select {
-  cursor: pointer;
-}
-
-.hint {
-  display: block;
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  margin-top: 0.4rem;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 0.75rem;
-  padding: 1.25rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.modal-actions button {
-  flex: 1;
-}
-
-.modal-actions .btn-secondary {
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--text-primary);
-  padding: 0.75rem;
-  font-family: inherit;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-}
-
-.modal-actions .btn-secondary:hover {
-  border-color: var(--text-primary);
-}
-
-/* ========================================
-   RESUME TEMPLATE STYLES
-   ======================================== */
-
-.resume-container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: white;
-  color: #333;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border: 3px solid #333;
-  overflow: hidden;
-}
-
-.resume-container .header {
-  background: white;
-  color: #333;
-  padding: 40px 50px;
-  border-bottom: 3px solid #333;
-}
-
-.resume-container .header h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
-  font-weight: 900;
-  letter-spacing: -1px;
-}
-
-.resume-container .header .title {
-  font-size: 18px;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
-
-.resume-container .contact-info {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 15px;
-  font-size: 14px;
-  margin-top: 15px;
-}
-
-.resume-container .contact-info a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 600;
-  border-bottom: 2px solid #333;
-  transition: opacity 0.3s;
-}
-
-.resume-container .contact-info a:hover {
-  opacity: 0.6;
-}
-
-.resume-container .content {
-  padding: 40px 50px;
-}
-
-.resume-container .section {
-  margin-bottom: 35px;
-}
-
-.resume-container .section-title {
-  font-size: 20px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #333;
-  border-bottom: 2px solid #333;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
-}
-
-.resume-container .summary {
-  font-size: 15px;
-  line-height: 1.7;
-  text-align: justify;
-}
-
-.resume-container .experience-item {
-  margin-bottom: 25px;
-  border-left: 3px solid #333;
-  padding-left: 20px;
-}
-
-.resume-container .experience-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.resume-container .job-title {
-  font-size: 17px;
-  font-weight: 900;
-}
-
-.resume-container .company {
-  font-size: 15px;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-.resume-container .duration {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.resume-container .duties {
-  margin-top: 10px;
-  padding-left: 20px;
-}
-
-.resume-container .duties li {
-  font-size: 14px;
-  margin-bottom: 8px;
-  line-height: 1.6;
-}
-
-.resume-container .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-}
-
-.resume-container .skill-category {
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.resume-container .skill-category strong {
-  font-weight: 900;
-}
-
-.resume-container .project-item {
-  margin-bottom: 20px;
-  font-size: 14px;
-  line-height: 1.6;
-  border-left: 3px solid #333;
-  padding-left: 20px;
-}
-
-.resume-container .project-title {
-  font-weight: 900;
-  font-size: 15px;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.resume-container .certifications-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 10px;
-}
-
-.resume-container .cert-item {
-  font-size: 14px;
-  padding: 5px 0;
-  font-weight: 600;
-}
-
-/* ========================================
-   PRINT STYLES
-   ======================================== */
-
-@media print {
-  body {
-    background: white;
-    padding: 0;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-
-  .main-content {
-    display: block;
-  }
-
-  .panel {
-    height: auto;
-  }
-
-  .input-panel {
-    display: none !important;
-  }
-
-  .preview-panel {
-    display: block;
-  }
-
-  .resume-wrapper {
-    padding: 0;
-    background: white;
-  }
-
-  .resume-container {
-    border: none;
-  }
-}
-
-/* ========================================
-   RESPONSIVE
-   ======================================== */
-
-@media screen and (max-width: 1024px) {
-  .main-content {
-    grid-template-columns: 1fr;
-  }
-
-  .panel {
-    height: auto;
-    min-height: 0;
-  }
-
-  .input-panel {
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .input-panel.active {
-    display: block;
-  }
-
-  .preview-panel.active {
-    display: flex;
-  }
-
-  .tab-nav {
-    display: flex;
-  }
-
-  .panel:not(.active) {
-    display: none;
-  }
-
-  .panel.active {
-    min-height: calc(100vh - 130px);
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .app-header {
-    padding: 0.875rem 1rem;
-  }
-
-  .logo-text {
-    font-size: 0.75rem;
-  }
-
-  .panel-inner {
-    padding: 1rem;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-  }
-
-  .resume-container .header,
-  .resume-container .content {
-    padding: 25px 20px;
-  }
-
-  .resume-container .header h1 {
-    font-size: 24px;
-  }
-
-  .resume-container .contact-info {
-    flex-direction: column;
-    gap: 6px;
-    font-size: 12px;
-  }
-
-  .resume-container .section-title {
-    font-size: 16px;
-  }
-
-  .resume-container .skills-grid,
-  .resume-container .certifications-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ========================================
-   VERSION HISTORY SIDEBAR
-   ======================================== */
-
-.history-sidebar {
-  position: fixed;
-  top: 65px;
-  left: 0;
-  width: 320px;
-  height: calc(100vh - 65px);
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border-color);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  z-index: 90;
-  display: flex;
-  flex-direction: column;
-}
-
-.history-sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.sidebar-header h3 {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-}
-
-.close-btn-small {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.25rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-}
-
-.close-btn-small:hover {
-  color: var(--text-primary);
-}
-
-.version-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0.75rem;
-}
-
-.version-item {
-  padding: 0.875rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.version-item:hover {
-  border-color: var(--border-light);
-}
-
-.version-item.active {
-  border-color: var(--text-primary);
-  background: var(--bg-tertiary);
-}
-
-.version-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.35rem;
-}
-
-.version-type {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-
-.version-type.tailored {
-  color: var(--success);
-}
-
-.version-name {
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.version-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.version-time {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-}
-
-.version-delete {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.version-item:hover .version-delete {
-  opacity: 1;
-}
-
-.version-delete:hover {
-  color: var(--error);
-}
-
-.version-changes {
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.change-item {
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-  margin-bottom: 0.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.change-more {
-  font-size: 0.6rem;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-.version-empty {
-  padding: 2rem;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-}
-
-/* Badge Count */
-.icon-btn {
-  position: relative;
-}
-
-.icon-btn.active {
-  border-color: var(--text-primary);
-  color: var(--text-primary);
-}
-
-.badge-count {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 16px;
-  height: 16px;
-  background: var(--text-primary);
-  color: var(--bg-primary);
-  font-size: 0.55rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-
-/* ========================================
-   CHANGES PANEL
-   ======================================== */
-
-.changes-panel {
-  background: var(--bg-tertiary);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.changes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.changes-header h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-}
-
-.changes-icon {
-  color: var(--success);
-}
-
-.changes-company {
-  font-weight: 400;
-  color: var(--text-muted);
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-.changes-list {
-  padding: 0.75rem 1rem;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.change-row {
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.change-row:last-child {
-  border-bottom: none;
-}
-
-.change-number {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.change-text {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.section-label {
-  font-size: 0.6rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  padding: 0.75rem 1rem 0.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.changes-section {
-  border-bottom: 1px solid var(--border-color);
-}
-
-.changes-section:last-child {
-  border-bottom: none;
-}
-
-.keywords-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-}
-
-.keyword-tag {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-}
-
-.toolbar-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.changes-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.6rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.changes-btn:hover,
-.changes-btn.active {
-  border-color: var(--success);
-  color: var(--success);
-}
-
-.changes-btn .changes-icon {
-  font-size: 0.7rem;
-}
-
-/* ========================================
-   ATS KEYWORDS (Hidden in Resume)
-   ======================================== */
-
-.resume-container .ats-keywords {
-  color: white;
-  background: white;
-  font-size: 1px;
-  line-height: 1;
-  padding: 5px;
-  margin-top: 20px;
-  user-select: all;
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
-}
-
-@media print {
-  .resume-container .ats-keywords {
-    color: white !important;
-    background: white !important;
-  }
-}
+import { useState, useRef, useEffect } from 'react';
+import type { ResumeData, AISettings, ResumeVersion } from './types';
+import { DEFAULT_SETTINGS, generateId } from './types';
+import { generateBaseResume, generateTailoredResume, extractATSKeywords } from './services/aiService';
+import { ResumeTemplate } from './components/ResumeTemplate';
+import { SettingsModal } from './components/SettingsModal';
+import { VersionHistory } from './components/VersionHistory';
+import { ChangesView } from './components/ChangesView';
+import './App.css';
+
+// LocalStorage keys
+const STORAGE_KEYS = {
+  RESUME_DATA: 'resume_builder_user_data',
+  SETTINGS: 'resume_builder_settings',
+  VERSIONS: 'resume_builder_versions',
+};
+
+function App() {
+  const [resumeInput, setResumeInput] = useState('');
+  const [jobDescription, setJobDescription] = useState('');
+  const [generatedResume, setGeneratedResume] = useState<ResumeData | null>(null);
+  const [atsKeywords, setAtsKeywords] = useState<string[]>([]);
+  const [atsEnabled, setAtsEnabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const [error, setError] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState<AISettings>(DEFAULT_SETTINGS);
+  const [activeTab, setActiveTab] = useState<'input' | 'preview'>('input');
+  const [versions, setVersions] = useState<ResumeVersion[]>([]);
+  const [currentVersion, setCurrentVersion] = useState<ResumeVersion | null>(null);
+  const [showChanges, setShowChanges] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const resumeRef = useRef<HTMLDivElement>(null);
+
+  // Load saved data on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEYS.RESUME_DATA);
+    if (savedData) {
+      setResumeInput(savedData);
+    }
+    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    if (savedSettings) {
+      try {
+        setSettings(JSON.parse(savedSettings));
+      } catch (e) {
+        console.error('Failed to parse saved settings');
+      }
+    }
+    const savedVersions = localStorage.getItem(STORAGE_KEYS.VERSIONS);
+    if (savedVersions) {
+      try {
+        setVersions(JSON.parse(savedVersions));
+      } catch (e) {
+        console.error('Failed to parse saved versions');
+      }
+    }
+  }, []);
+
+  // Save resume data when it changes
+  useEffect(() => {
+    if (resumeInput) {
+      localStorage.setItem(STORAGE_KEYS.RESUME_DATA, resumeInput);
+    }
+  }, [resumeInput]);
+
+  // Save versions when they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.VERSIONS, JSON.stringify(versions));
+  }, [versions]);
+
+  // Save settings when they change
+  const handleSaveSettings = (newSettings: AISettings) => {
+    setSettings(newSettings);
+    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
+  };
+
+  const validateSettings = (): boolean => {
+    if (settings.provider === 'google' && !settings.googleApiKey) {
+      setError('Please configure your Google AI API key in Settings');
+      return false;
+    }
+    if (settings.provider === 'cerebras' && !settings.cerebrasApiKey) {
+      setError('Please configure your Cerebras API key in Settings');
+      return false;
+    }
+    if (settings.provider === 'mistral' && !settings.mistralApiKey) {
+      setError('Please configure your Mistral API key in Settings');
+      return false;
+    }
+    return true;
+  };
+
+  const saveVersion = (
+    data: ResumeData,
+    type: 'base' | 'tailored',
+    companyName?: string,
+    jobTitle?: string,
+    changes?: string[],
+    keywords?: string[]
+  ) => {
+    const name = type === 'tailored' && companyName
+      ? `${companyName} - ${jobTitle || 'Position'}`
+      : `Base Resume`;
+
+    const version: ResumeVersion = {
+      id: generateId(),
+      name,
+      timestamp: Date.now(),
+      data,
+      type,
+      companyName,
+      jobTitle,
+      atsKeywords: keywords,
+      changes,
+    };
+
+    setVersions((prev) => [version, ...prev.slice(0, 19)]); // Keep last 20
+    setCurrentVersion(version);
+  };
+
+  const handleGenerateResume = async () => {
+    if (!resumeInput.trim()) {
+      setError('Please enter your resume information');
+      return;
+    }
+
+    if (!validateSettings()) return;
+
+    setError('');
+    setIsLoading(true);
+    setLoadingMessage('Analyzing your resume data...');
+
+    try {
+      const resume = await generateBaseResume(resumeInput, settings);
+      setGeneratedResume(resume);
+      setAtsKeywords([]);
+      saveVersion(resume, 'base');
+      setActiveTab('preview');
+      setShowChanges(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate resume');
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage('');
+    }
+  };
+
+  const handleGenerateTailoredResume = async () => {
+    if (!resumeInput.trim()) {
+      setError('Please enter your resume information');
+      return;
+    }
+
+    if (!jobDescription.trim()) {
+      setError('Please enter a job description to tailor your resume');
+      return;
+    }
+
+    if (!validateSettings()) return;
+
+    setError('');
+    setIsLoading(true);
+    setLoadingMessage('Tailoring your resume for the job...');
+
+    try {
+      const result = await generateTailoredResume(resumeInput, jobDescription, settings);
+      setGeneratedResume(result.resume);
+
+      let keywords: string[] = [];
+      if (atsEnabled) {
+        setLoadingMessage('Extracting ATS keywords...');
+        keywords = await extractATSKeywords(jobDescription, settings);
+        setAtsKeywords(keywords);
+      } else {
+        setAtsKeywords([]);
+      }
+
+      saveVersion(
+        result.resume,
+        'tailored',
+        result.companyName,
+        result.jobTitle,
+        result.changes,
+        keywords
+      );
+
+      setActiveTab('preview');
+      if (result.changes && result.changes.length > 0) {
+        setShowChanges(true);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate tailored resume');
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage('');
+    }
+  };
+
+  const handleSelectVersion = (version: ResumeVersion) => {
+    setGeneratedResume(version.data);
+    setCurrentVersion(version);
+    setAtsKeywords(version.atsKeywords || []);
+    setActiveTab('preview');
+    setShowHistory(false);
+    if (version.changes && version.changes.length > 0) {
+      setShowChanges(true);
+    } else {
+      setShowChanges(false);
+    }
+  };
+
+  const handleDeleteVersion = (id: string) => {
+    setVersions((prev) => prev.filter((v) => v.id !== id));
+    if (currentVersion?.id === id) {
+      setCurrentVersion(null);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    window.print();
+  };
+
+  const handleClearData = () => {
+    if (confirm('Clear all saved resume data?')) {
+      setResumeInput('');
+      localStorage.removeItem(STORAGE_KEYS.RESUME_DATA);
+    }
+  };
+
+  const getProviderLabel = () => {
+    switch (settings.provider) {
+      case 'google': return 'Google AI';
+      case 'cerebras': return 'Cerebras';
+      case 'mistral': return 'Mistral AI';
+    }
+  };
+
+  return (
+    <div className="app">
+      {/* Floating Header */}
+      <header className="app-header no-print">
+        <div className="header-left">
+          <div className="logo">
+            <span className="logo-icon">◈</span>
+            <span className="logo-text">Resume Builder</span>
+          </div>
+        </div>
+        <div className="header-right">
+          <button
+            className={`icon-btn ${showHistory ? 'active' : ''}`}
+            onClick={() => setShowHistory(!showHistory)}
+            title="Version History"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12,6 12,12 16,14"></polyline>
+            </svg>
+            {versions.length > 0 && <span className="badge-count">{versions.length}</span>}
+          </button>
+          <div className="provider-badge" onClick={() => setShowSettings(true)}>
+            <span className="badge-dot"></span>
+            <span>{getProviderLabel()}</span>
+          </div>
+          <button className="icon-btn" onClick={() => setShowSettings(true)} title="Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      {/* Tab Navigation (Mobile) */}
+      <div className="tab-nav no-print">
+        <button
+          className={`tab-btn ${activeTab === 'input' ? 'active' : ''}`}
+          onClick={() => setActiveTab('input')}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Input
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'preview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('preview')}
+          disabled={!generatedResume}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14,2 14,8 20,8"></polyline>
+          </svg>
+          Preview
+        </button>
+      </div>
+
+      <main className="main-content">
+        {/* Version History Sidebar */}
+        <div className={`history-sidebar no-print ${showHistory ? 'open' : ''}`}>
+          <div className="sidebar-header">
+            <h3>Version History</h3>
+            <button className="close-btn-small" onClick={() => setShowHistory(false)}>×</button>
+          </div>
+          <VersionHistory
+            versions={versions}
+            currentVersionId={currentVersion?.id || null}
+            onSelectVersion={handleSelectVersion}
+            onDeleteVersion={handleDeleteVersion}
+          />
+        </div>
+
+        {/* Input Panel */}
+        <div className={`panel input-panel no-print ${activeTab === 'input' ? 'active' : ''}`}>
+          <div className="panel-inner">
+            {/* Resume Data Card */}
+            <div className="card">
+              <div className="card-header">
+                <h3>Your Resume Data</h3>
+                {resumeInput && (
+                  <button className="text-btn" onClick={handleClearData}>Clear</button>
+                )}
+              </div>
+              <textarea
+                value={resumeInput}
+                onChange={(e) => setResumeInput(e.target.value)}
+                placeholder="Paste all your resume details here...&#10;&#10;Include: contact info, work experience, skills, education, projects, certifications, etc."
+                rows={10}
+              />
+              <div className="card-footer">
+                <span className="saved-indicator">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                    <polyline points="7,3 7,8 15,8"></polyline>
+                  </svg>
+                  Auto-saved
+                </span>
+              </div>
+            </div>
+
+            {/* Job Description Card */}
+            <div className="card">
+              <div className="card-header">
+                <h3>Job Description</h3>
+                <span className="badge">Optional</span>
+              </div>
+              <textarea
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="Paste the job description here to tailor your resume for this specific role..."
+                rows={6}
+              />
+
+              {/* ATS Toggle */}
+              <label className="toggle-label">
+                <input
+                  type="checkbox"
+                  checked={atsEnabled}
+                  onChange={(e) => setAtsEnabled(e.target.checked)}
+                />
+                <span className="toggle-switch"></span>
+                <div className="toggle-text">
+                  <span>ATS Optimization</span>
+                  <span className="toggle-hint">Add hidden keywords for ATS scanners</span>
+                </div>
+              </label>
+            </div>
+
+            {/* Error Display */}
+            {error && (
+              <div className="error-message">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                {error}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="action-buttons">
+              <button
+                className="btn-primary"
+                onClick={handleGenerateResume}
+                disabled={isLoading}
+              >
+                {isLoading && !jobDescription ? (
+                  <>
+                    <span className="spinner-small"></span>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polygon points="13,2 3,14 12,14 11,22 21,10 12,10" />
+                    </svg>
+                    Generate Resume
+                  </>
+                )}
+              </button>
+              <button
+                className="btn-outline"
+                onClick={handleGenerateTailoredResume}
+                disabled={isLoading || !jobDescription.trim()}
+              >
+                {isLoading && jobDescription ? (
+                  <>
+                    <span className="spinner-small"></span>
+                    Tailoring...
+                  </>
+                ) : (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    Tailor for Job
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Loading Indicator */}
+            {isLoading && (
+              <div className="loading-card">
+                <div className="loading-animation">
+                  <div className="loading-dot"></div>
+                  <div className="loading-dot"></div>
+                  <div className="loading-dot"></div>
+                </div>
+                <span>{loadingMessage}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Preview Panel */}
+        <div className={`panel preview-panel ${activeTab === 'preview' ? 'active' : ''}`}>
+          {generatedResume ? (
+            <>
+              <div className="preview-toolbar no-print">
+                <div className="toolbar-left">
+                  <h3>{currentVersion?.name || 'Resume Preview'}</h3>
+                  {currentVersion && (currentVersion.changes?.length || currentVersion.atsKeywords?.length) && (
+                    <button
+                      className={`changes-btn ${showChanges ? 'active' : ''}`}
+                      onClick={() => setShowChanges(!showChanges)}
+                    >
+                      <span className="changes-icon">✦</span>
+                      {currentVersion.changes?.length || 0} changes
+                      {currentVersion.atsKeywords?.length ? ` + ${currentVersion.atsKeywords.length} keywords` : ''}
+                    </button>
+                  )}
+                </div>
+                <button className="btn-download" onClick={handleDownloadPDF}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7,10 12,15 17,10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Download PDF
+                </button>
+              </div>
+
+              {/* Changes Panel */}
+              {showChanges && currentVersion && (currentVersion.changes?.length || currentVersion.atsKeywords?.length) && (
+                <ChangesView
+                  version={currentVersion}
+                  onClose={() => setShowChanges(false)}
+                />
+              )}
+
+              <div className="resume-wrapper" ref={resumeRef}>
+                <ResumeTemplate
+                  data={generatedResume}
+                  atsKeywords={atsEnabled || currentVersion?.atsKeywords?.length ? (currentVersion?.atsKeywords || atsKeywords) : undefined}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="empty-preview no-print">
+              <div className="empty-icon">◈</div>
+              <h3>No Resume Yet</h3>
+              <p>Enter your resume data and click Generate to see your resume here</p>
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <SettingsModal
+          settings={settings}
+          onSave={handleSaveSettings}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+export default App;
