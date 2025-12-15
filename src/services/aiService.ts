@@ -2,6 +2,7 @@ import type { ResumeData, AISettings } from '../types';
 
 const GOOGLE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const CEREBRAS_API_URL = 'https://api.cerebras.ai/v1/chat/completions';
+const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
 
 async function callGoogleAI(prompt: string, settings: AISettings): Promise<string> {
     const response = await fetch(
@@ -52,13 +53,40 @@ async function callCerebrasAI(prompt: string, settings: AISettings): Promise<str
     return data.choices?.[0]?.message?.content || '';
 }
 
+async function callMistralAI(prompt: string, settings: AISettings): Promise<string> {
+    const response = await fetch(MISTRAL_API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${settings.mistralApiKey}`,
+        },
+        body: JSON.stringify({
+            model: settings.mistralModel,
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.7,
+            max_tokens: 8192,
+        }),
+    });
+
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Mistral API error: ${error}`);
+    }
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || '';
+}
+
 async function callAI(prompt: string, settings: AISettings): Promise<string> {
     if (settings.provider === 'google') {
         if (!settings.googleApiKey) throw new Error('Google API key is required');
         return callGoogleAI(prompt, settings);
-    } else {
+    } else if (settings.provider === 'cerebras') {
         if (!settings.cerebrasApiKey) throw new Error('Cerebras API key is required');
         return callCerebrasAI(prompt, settings);
+    } else {
+        if (!settings.mistralApiKey) throw new Error('Mistral API key is required');
+        return callMistralAI(prompt, settings);
     }
 }
 
