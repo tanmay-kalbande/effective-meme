@@ -102,6 +102,13 @@ function extractJSON(text: string): string {
         return text.slice(jsonStart, jsonEnd + 1);
     }
 
+    // Try array format
+    const arrayStart = text.indexOf('[');
+    const arrayEnd = text.lastIndexOf(']');
+    if (arrayStart !== -1 && arrayEnd !== -1 && (jsonStart === -1 || arrayStart < jsonStart)) {
+        return text.slice(arrayStart, arrayEnd + 1);
+    }
+
     return text;
 }
 
@@ -161,17 +168,46 @@ Return ONLY the JSON object, nothing else.`;
     }
 }
 
+export interface TailoredResumeResult {
+    resume: ResumeData;
+    changes: string[];
+    companyName: string;
+    jobTitle: string;
+}
+
 export async function generateTailoredResume(
     resumeData: string,
     jobDescription: string,
     settings: AISettings
-): Promise<ResumeData> {
-    const prompt = `You are an expert resume optimizer. Given the resume data and job description below, create an optimized version that:
-1. Subtly rephrases experience bullets to align with job requirements
-2. Emphasizes relevant skills from the JD
-3. Naturally incorporates important keywords from JD into existing content
-4. Maintains truthfulness - only modify phrasing, don't add fake experience
-5. Returns the same JSON structure but with optimized content
+): Promise<TailoredResumeResult> {
+    const prompt = `You are an expert resume optimizer. Given the resume data and job description below, create an optimized version.
+
+IMPORTANT: Return a JSON object with this EXACT structure:
+{
+  "companyName": "string (extract from JD)",
+  "jobTitle": "string (extract from JD)", 
+  "changes": ["string describing change 1", "string describing change 2", ...],
+  "resume": {
+    "fullName": "string",
+    "title": "string (optimized for job)",
+    "email": "string",
+    "phone": "string",
+    "linkedin": "string",
+    "github": "string",
+    "portfolio": "string",
+    "location": "string",
+    "summary": "string (optimized for the job)",
+    "experiences": [{"jobTitle": "string", "company": "string", "duration": "string", "duties": ["string"]}],
+    "skills": {"languages": "string", "databases": "string", "mlAi": "string", "visualization": "string", "frameworks": "string", "bigData": "string"},
+    "projects": [{"title": "string", "description": "string"}],
+    "certifications": ["string"]
+  }
+}
+
+The "changes" array should list 3-5 specific changes you made, like:
+- "Emphasized Python and ML skills to match data scientist requirements"
+- "Rephrased experience bullets to include 'cross-functional collaboration'"
+- "Updated summary to highlight relevant cloud experience"
 
 Resume Data:
 ${resumeData}
@@ -179,30 +215,19 @@ ${resumeData}
 Job Description:
 ${jobDescription}
 
-Return ONLY a valid JSON object (no markdown, no explanation) with this structure:
-{
-  "fullName": "string",
-  "title": "string",
-  "email": "string",
-  "phone": "string",
-  "linkedin": "string",
-  "github": "string",
-  "portfolio": "string",
-  "location": "string",
-  "summary": "string (optimized for the job)",
-  "experiences": [{"jobTitle": "string", "company": "string", "duration": "string", "duties": ["string"]}],
-  "skills": {"languages": "string", "databases": "string", "mlAi": "string", "visualization": "string", "frameworks": "string", "bigData": "string"},
-  "projects": [{"title": "string", "description": "string"}],
-  "certifications": ["string"]
-}
-
 Return ONLY the JSON object, nothing else.`;
 
     const response = await callAI(prompt, settings);
     const jsonStr = extractJSON(response);
 
     try {
-        return JSON.parse(jsonStr) as ResumeData;
+        const result = JSON.parse(jsonStr);
+        return {
+            resume: result.resume,
+            changes: result.changes || [],
+            companyName: result.companyName || 'Unknown Company',
+            jobTitle: result.jobTitle || 'Position'
+        };
     } catch (e) {
         console.error('Failed to parse JSON:', jsonStr);
         throw new Error('Failed to parse AI response as JSON. Please try again.');
@@ -213,7 +238,16 @@ export async function extractATSKeywords(
     jobDescription: string,
     settings: AISettings
 ): Promise<string[]> {
-    const prompt = `Analyze this job description and identify 10-15 technical keywords, skills, and important terms that an ATS (Applicant Tracking System) would scan for. Return ONLY a JSON array of strings, nothing else.
+    const prompt = `Analyze this job description and identify 15-20 important technical keywords, skills, tools, and terms that an ATS (Applicant Tracking System) would scan for.
+
+Include:
+- Technical skills and tools
+- Soft skills mentioned
+- Industry-specific terms
+- Required qualifications
+- Key responsibilities phrases
+
+Return ONLY a JSON array of strings, nothing else.
 
 Job Description:
 ${jobDescription}
@@ -229,5 +263,32 @@ Return format: ["keyword1", "keyword2", "keyword3", ...]`;
     } catch (e) {
         console.error('Failed to parse keywords:', jsonStr);
         return [];
+    }
+}
+
+export async function extractJobInfo(
+    jobDescription: string,
+    settings: AISettings
+): Promise<{ companyName: string; jobTitle: string }> {
+    const prompt = `Extract the company name and job title from this job description. Return ONLY a JSON object:
+{"companyName": "string", "jobTitle": "string"}
+
+If you can't find them, use "Company" and "Position" as defaults.
+
+Job Description:
+${jobDescription}
+
+Return ONLY the JSON object.`;
+
+    try {
+        const response = await callAI(prompt, settings);
+        const jsonStr = extractJSON(response);
+        const result = JSON.parse(jsonStr);
+        return {
+            companyName: result.companyName || 'Company',
+            jobTitle: result.jobTitle || 'Position'
+        };
+    } catch (e) {
+        return { companyName: 'Company', jobTitle: 'Position' };
     }
 }
