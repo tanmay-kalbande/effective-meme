@@ -77,7 +77,7 @@ async function callMistralAI(prompt: string, settings: AISettings): Promise<stri
     return data.choices?.[0]?.message?.content || '';
 }
 
-async function callAI(prompt: string, settings: AISettings): Promise<string> {
+export async function callAI(prompt: string, settings: AISettings): Promise<string> {
     if (settings.provider === 'google') {
         if (!settings.googleApiKey) throw new Error('Google API key is required');
         return callGoogleAI(prompt, settings);
@@ -90,7 +90,7 @@ async function callAI(prompt: string, settings: AISettings): Promise<string> {
     }
 }
 
-function extractJSON(text: string): string {
+export function extractJSON(text: string): string {
     // Try to extract JSON from markdown code blocks
     const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) return jsonMatch[1].trim();
