@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
-import type { ResumeData, AISettings } from './types';
-import { DEFAULT_SETTINGS } from './types';
+import type { ResumeData, AISettings, ResumeVersion } from './types';
+import { DEFAULT_SETTINGS, generateId } from './types';
 import { generateBaseResume, generateTailoredResume, extractATSKeywords } from './services/aiService';
 import { ResumeTemplate } from './components/ResumeTemplate';
 import { SettingsModal } from './components/SettingsModal';
+import { VersionHistory } from './components/VersionHistory';
+import { ChangesView } from './components/ChangesView';
 import './App.css';
 
 // LocalStorage keys
 const STORAGE_KEYS = {
   RESUME_DATA: 'resume_builder_user_data',
   SETTINGS: 'resume_builder_settings',
+  VERSIONS: 'resume_builder_versions',
 };
 
 function App() {
@@ -24,6 +27,10 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState<AISettings>(DEFAULT_SETTINGS);
   const [activeTab, setActiveTab] = useState<'input' | 'preview'>('input');
+  const [versions, setVersions] = useState<ResumeVersion[]>([]);
+  const [currentVersion, setCurrentVersion] = useState<ResumeVersion | null>(null);
+  const [showChanges, setShowChanges] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const resumeRef = useRef<HTMLDivElement>(null);
 
   // Load saved data on mount
@@ -40,6 +47,14 @@ function App() {
         console.error('Failed to parse saved settings');
       }
     }
+    const savedVersions = localStorage.getItem(STORAGE_KEYS.VERSIONS);
+    if (savedVersions) {
+      try {
+        setVersions(JSON.parse(savedVersions));
+      } catch (e) {
+        console.error('Failed to parse saved versions');
+      }
+    }
   }, []);
 
   // Save resume data when it changes
@@ -48,6 +63,11 @@ function App() {
       localStorage.setItem(STORAGE_KEYS.RESUME_DATA, resumeInput);
     }
   }, [resumeInput]);
+
+  // Save versions when they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.VERSIONS, JSON.stringify(versions));
+  }, [versions]);
 
   // Save settings when they change
   const handleSaveSettings = (newSettings: AISettings) => {
@@ -71,6 +91,34 @@ function App() {
     return true;
   };
 
+  const saveVersion = (
+    data: ResumeData,
+    type: 'base' | 'tailored',
+    companyName?: string,
+    jobTitle?: string,
+    changes?: string[],
+    keywords?: string[]
+  ) => {
+    const name = type === 'tailored' && companyName
+      ? `${companyName} - ${jobTitle || 'Position'}`
+      : `Base Resume`;
+
+    const version: ResumeVersion = {
+      id: generateId(),
+      name,
+      timestamp: Date.now(),
+      data,
+      type,
+      companyName,
+      jobTitle,
+      atsKeywords: keywords,
+      changes,
+    };
+
+    setVersions((prev) => [version, ...prev.slice(0, 19)]); // Keep last 20
+    setCurrentVersion(version);
+  };
+
   const handleGenerateResume = async () => {
     if (!resumeInput.trim()) {
       setError('Please enter your resume information');
@@ -87,7 +135,9 @@ function App() {
       const resume = await generateBaseResume(resumeInput, settings);
       setGeneratedResume(resume);
       setAtsKeywords([]);
+      saveVersion(resume, 'base');
       setActiveTab('preview');
+      setShowChanges(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate resume');
     } finally {
@@ -114,22 +164,56 @@ function App() {
     setLoadingMessage('Tailoring your resume for the job...');
 
     try {
-      const resume = await generateTailoredResume(resumeInput, jobDescription, settings);
-      setGeneratedResume(resume);
+      const result = await generateTailoredResume(resumeInput, jobDescription, settings);
+      setGeneratedResume(result.resume);
 
+      let keywords: string[] = [];
       if (atsEnabled) {
         setLoadingMessage('Extracting ATS keywords...');
-        const keywords = await extractATSKeywords(jobDescription, settings);
+        keywords = await extractATSKeywords(jobDescription, settings);
         setAtsKeywords(keywords);
       } else {
         setAtsKeywords([]);
       }
+
+      saveVersion(
+        result.resume,
+        'tailored',
+        result.companyName,
+        result.jobTitle,
+        result.changes,
+        keywords
+      );
+
       setActiveTab('preview');
+      if (result.changes && result.changes.length > 0) {
+        setShowChanges(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate tailored resume');
     } finally {
       setIsLoading(false);
       setLoadingMessage('');
+    }
+  };
+
+  const handleSelectVersion = (version: ResumeVersion) => {
+    setGeneratedResume(version.data);
+    setCurrentVersion(version);
+    setAtsKeywords(version.atsKeywords || []);
+    setActiveTab('preview');
+    setShowHistory(false);
+    if (version.changes && version.changes.length > 0) {
+      setShowChanges(true);
+    } else {
+      setShowChanges(false);
+    }
+  };
+
+  const handleDeleteVersion = (id: string) => {
+    setVersions((prev) => prev.filter((v) => v.id !== id));
+    if (currentVersion?.id === id) {
+      setCurrentVersion(null);
     }
   };
 
@@ -163,6 +247,17 @@ function App() {
           </div>
         </div>
         <div className="header-right">
+          <button
+            className={`icon-btn ${showHistory ? 'active' : ''}`}
+            onClick={() => setShowHistory(!showHistory)}
+            title="Version History"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12,6 12,12 16,14"></polyline>
+            </svg>
+            {versions.length > 0 && <span className="badge-count">{versions.length}</span>}
+          </button>
           <div className="provider-badge" onClick={() => setShowSettings(true)}>
             <span className="badge-dot"></span>
             <span>{getProviderLabel()}</span>
@@ -202,6 +297,20 @@ function App() {
       </div>
 
       <main className="main-content">
+        {/* Version History Sidebar */}
+        <div className={`history-sidebar no-print ${showHistory ? 'open' : ''}`}>
+          <div className="sidebar-header">
+            <h3>Version History</h3>
+            <button className="close-btn-small" onClick={() => setShowHistory(false)}>×</button>
+          </div>
+          <VersionHistory
+            versions={versions}
+            currentVersionId={currentVersion?.id || null}
+            onSelectVersion={handleSelectVersion}
+            onDeleteVersion={handleDeleteVersion}
+          />
+        </div>
+
         {/* Input Panel */}
         <div className={`panel input-panel no-print ${activeTab === 'input' ? 'active' : ''}`}>
           <div className="panel-inner">
@@ -333,7 +442,18 @@ function App() {
           {generatedResume ? (
             <>
               <div className="preview-toolbar no-print">
-                <h3>Resume Preview</h3>
+                <div className="toolbar-left">
+                  <h3>{currentVersion?.name || 'Resume Preview'}</h3>
+                  {currentVersion?.type === 'tailored' && currentVersion.changes && (
+                    <button
+                      className={`changes-btn ${showChanges ? 'active' : ''}`}
+                      onClick={() => setShowChanges(!showChanges)}
+                    >
+                      <span className="changes-icon">✦</span>
+                      {currentVersion.changes.length} changes
+                    </button>
+                  )}
+                </div>
                 <button className="btn-download" onClick={handleDownloadPDF}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -343,8 +463,21 @@ function App() {
                   Download PDF
                 </button>
               </div>
+
+              {/* Changes Panel */}
+              {showChanges && currentVersion?.changes && (
+                <ChangesView
+                  changes={currentVersion.changes}
+                  companyName={currentVersion.companyName}
+                  onClose={() => setShowChanges(false)}
+                />
+              )}
+
               <div className="resume-wrapper" ref={resumeRef}>
-                <ResumeTemplate data={generatedResume} atsKeywords={atsEnabled ? atsKeywords : undefined} />
+                <ResumeTemplate
+                  data={generatedResume}
+                  atsKeywords={atsEnabled || currentVersion?.atsKeywords?.length ? (currentVersion?.atsKeywords || atsKeywords) : undefined}
+                />
               </div>
             </>
           ) : (
