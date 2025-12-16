@@ -238,28 +238,27 @@ export async function extractATSKeywords(
     jobDescription: string,
     settings: AISettings
 ): Promise<string[]> {
-    const prompt = `Analyze this job description and identify 15-20 important technical keywords, skills, tools, and terms that an ATS (Applicant Tracking System) would scan for.
+    const prompt = `Analyze this job description and identify 8-10 of the MOST IMPORTANT keywords that an ATS (Applicant Tracking System) would scan for.
 
-Include:
-- Technical skills and tools
-- Soft skills mentioned
-- Industry-specific terms
-- Required qualifications
-- Key responsibilities phrases
+Focus only on:
+- Critical technical skills and tools
+- Must-have qualifications
+- Key industry terms
 
-Return ONLY a JSON array of strings, nothing else.
+Return ONLY a JSON array of 8-10 strings, nothing else. Keep it focused - quality over quantity.
 
 Job Description:
 ${jobDescription}
 
-Return format: ["keyword1", "keyword2", "keyword3", ...]`;
+Return format: ["keyword1", "keyword2", ...]`;
 
     const response = await callAI(prompt, settings);
     const jsonStr = extractJSON(response);
 
     try {
         const keywords = JSON.parse(jsonStr);
-        return Array.isArray(keywords) ? keywords : [];
+        // Cap at 10 keywords to prevent keyword stuffing
+        return Array.isArray(keywords) ? keywords.slice(0, 10) : [];
     } catch (e) {
         console.error('Failed to parse keywords:', jsonStr);
         return [];
