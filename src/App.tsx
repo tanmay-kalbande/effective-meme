@@ -278,7 +278,7 @@ function App() {
             </svg>
             {versions.length > 0 && <span className="badge-count">{versions.length}</span>}
           </button>
-          <div className="provider-badge" onClick={() => setShowSettings(true)}>
+          <div className="provider-badge" onClick={() => setShowSettings(true)} title="Click to change AI provider settings">
             <span className="badge-dot"></span>
             <span>{getProviderLabel()}</span>
           </div>
@@ -296,6 +296,7 @@ function App() {
         <button
           className={`tab-btn ${activeTab === 'input' ? 'active' : ''}`}
           onClick={() => setActiveTab('input')}
+          title="Enter your resume data"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -307,6 +308,7 @@ function App() {
           className={`tab-btn ${activeTab === 'preview' ? 'active' : ''}`}
           onClick={() => setActiveTab('preview')}
           disabled={!generatedResume}
+          title="View generated resume"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -321,7 +323,7 @@ function App() {
         <div className={`history-sidebar no-print ${showHistory ? 'open' : ''}`}>
           <div className="sidebar-header">
             <h3>Version History</h3>
-            <button className="close-btn-small" onClick={() => setShowHistory(false)}>×</button>
+            <button className="close-btn-small" onClick={() => setShowHistory(false)} title="Close sidebar">×</button>
           </div>
           <VersionHistory
             versions={versions}
@@ -339,7 +341,7 @@ function App() {
               <div className="card-header">
                 <h3>Your Resume Data</h3>
                 {resumeInput && (
-                  <button className="text-btn" onClick={handleClearData}>Clear</button>
+                  <button className="text-btn" onClick={handleClearData} title="Clear all resume data">Clear</button>
                 )}
               </div>
               <textarea
@@ -406,6 +408,7 @@ function App() {
                 className="btn-primary"
                 onClick={handleGenerateResume}
                 disabled={isLoading}
+                title="Generate a clean resume from your data"
               >
                 {isLoading && !jobDescription ? (
                   <>
@@ -425,6 +428,7 @@ function App() {
                 className="btn-outline"
                 onClick={handleGenerateTailoredResume}
                 disabled={isLoading || !jobDescription.trim()}
+                title="Tailor your resume for the specific job description"
               >
                 {isLoading && jobDescription ? (
                   <>
@@ -468,6 +472,7 @@ function App() {
                     <button
                       className={`changes-btn ${showChanges ? 'active' : ''}`}
                       onClick={() => setShowChanges(!showChanges)}
+                      title="View AI changes and ATS keywords"
                     >
                       <span className="changes-icon">✦</span>
                       {currentVersion.changes?.length || 0} changes
@@ -476,13 +481,13 @@ function App() {
                   )}
                 </div>
                 <div className="toolbar-right" style={{ display: 'flex', gap: '8px' }}>
-                  <button className="btn-analyze" onClick={handleAnalyzeResume} disabled={isLoading}>
+                  <button className="btn-analyze" onClick={handleAnalyzeResume} disabled={isLoading} title="Get AI analysis with score, strengths and improvements">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                     </svg>
                     Analyze
                   </button>
-                  <button className="btn-download" onClick={handleDownloadPDF}>
+                  <button className="btn-download" onClick={handleDownloadPDF} title="Download resume as PDF">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                       <polyline points="7,10 12,15 17,10"></polyline>
