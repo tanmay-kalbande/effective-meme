@@ -109,7 +109,7 @@ function App() {
 
   const saveVersion = (
     data: ResumeData,
-    type: 'base' | 'tailored',
+    type: 'base' | 'tailored' | 'fixed',
     companyName?: string,
     jobTitle?: string,
     changes?: string[],
@@ -117,7 +117,9 @@ function App() {
   ) => {
     const name = type === 'tailored' && companyName
       ? `${companyName} - ${jobTitle || 'Position'}`
-      : `Base Resume`;
+      : type === 'fixed'
+        ? 'Fixed Resume'
+        : `Base Resume`;
 
     const version: ResumeVersion = {
       id: generateId(),
