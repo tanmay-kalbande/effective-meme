@@ -43,7 +43,7 @@ export interface ResumeVersion {
   name: string;
   timestamp: number;
   data: ResumeData;
-  type: 'base' | 'tailored';
+  type: 'base' | 'tailored' | 'fixed';
   companyName?: string;
   jobTitle?: string;
   atsKeywords?: string[];
