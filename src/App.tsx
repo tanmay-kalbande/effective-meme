@@ -15,6 +15,7 @@ const STORAGE_KEYS = {
   RESUME_DATA: 'resume_builder_user_data',
   SETTINGS: 'resume_builder_settings',
   VERSIONS: 'resume_builder_versions',
+  RESUME_COLLAPSED: 'resume_builder_collapsed',
 };
 
 function App() {
@@ -59,6 +60,11 @@ function App() {
         console.error('Failed to parse saved versions');
       }
     }
+    // Load collapse state
+    const savedCollapsed = localStorage.getItem(STORAGE_KEYS.RESUME_COLLAPSED);
+    if (savedCollapsed) {
+      setIsResumeCollapsed(savedCollapsed === 'true');
+    }
   }, []);
 
   // Save resume data when it changes
@@ -72,6 +78,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.VERSIONS, JSON.stringify(versions));
   }, [versions]);
+
+  // Save collapse state when it changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.RESUME_COLLAPSED, String(isResumeCollapsed));
+  }, [isResumeCollapsed]);
 
   // Save settings when they change
   const handleSaveSettings = (newSettings: AISettings) => {
@@ -524,29 +535,19 @@ function App() {
               </div>
             </>
           ) : isLoading ? (
-            <div className="skeleton-loader">
-              <div className="skeleton-resume">
-                <div className="skeleton-header">
-                  <div className="skeleton-line skeleton-title"></div>
-                  <div className="skeleton-line skeleton-subtitle"></div>
-                  <div className="skeleton-contact">
-                    <div className="skeleton-line skeleton-contact-item"></div>
-                    <div className="skeleton-line skeleton-contact-item"></div>
-                    <div className="skeleton-line skeleton-contact-item"></div>
-                  </div>
+            <div className="preview-loading">
+              <div className="loading-content">
+                <div className="loading-spinner">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                  </svg>
                 </div>
-                <div className="skeleton-section">
-                  <div className="skeleton-line skeleton-section-title"></div>
-                  <div className="skeleton-line skeleton-text"></div>
-                  <div className="skeleton-line skeleton-text"></div>
-                  <div className="skeleton-line skeleton-text short"></div>
+                <div className="loading-text">
+                  <h3>Building Your Resume</h3>
+                  <p>{loadingMessage || 'Analyzing your data...'}</p>
                 </div>
-                <div className="skeleton-section">
-                  <div className="skeleton-line skeleton-section-title"></div>
-                  <div className="skeleton-line skeleton-text"></div>
-                  <div className="skeleton-line skeleton-text"></div>
-                  <div className="skeleton-line skeleton-text"></div>
-                  <div className="skeleton-line skeleton-text short"></div>
+                <div className="loading-progress">
+                  <div className="progress-bar"></div>
                 </div>
               </div>
             </div>
