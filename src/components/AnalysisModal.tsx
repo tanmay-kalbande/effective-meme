@@ -3,14 +3,18 @@ import type { ResumeAnalysis } from '../services/analysisService';
 interface AnalysisModalProps {
     analysis: ResumeAnalysis;
     onClose: () => void;
+    onFix: () => void;
+    isFixing?: boolean;
 }
 
-export function AnalysisModal({ analysis, onClose }: AnalysisModalProps) {
+export function AnalysisModal({ analysis, onClose, onFix, isFixing }: AnalysisModalProps) {
     const getScoreColor = (score: number) => {
         if (score >= 80) return '#22c55e'; // Green
         if (score >= 60) return '#eab308'; // Yellow
         return '#ef4444'; // Red
     };
+
+    const hasIssues = analysis.weaknesses.length > 0 || analysis.improvements.length > 0;
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -59,8 +63,34 @@ export function AnalysisModal({ analysis, onClose }: AnalysisModalProps) {
                             ))}
                         </ul>
                     </div>
+
+                    {hasIssues && (
+                        <div className="fix-section">
+                            <button
+                                className="btn-fix"
+                                onClick={onFix}
+                                disabled={isFixing}
+                            >
+                                {isFixing ? (
+                                    <>
+                                        <span className="spinner-small"></span>
+                                        Fixing Issues...
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                        </svg>
+                                        Fix All Issues
+                                    </>
+                                )}
+                            </button>
+                            <p className="fix-hint">AI will automatically fix all weaknesses and implement improvements</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
+
