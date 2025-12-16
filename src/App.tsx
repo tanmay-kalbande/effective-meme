@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { ResumeData, AISettings, ResumeVersion } from './types';
 import { DEFAULT_SETTINGS, generateId } from './types';
-import { generateBaseResume, generateTailoredResume, extractATSKeywords } from './services/aiService';
+import { generateBaseResume, generateTailoredResume, extractATSKeywords, fixResumeWeaknesses } from './services/aiService';
 import { analyzeResume, type ResumeAnalysis } from './services/analysisService';
 import { ResumeTemplate } from './components/ResumeTemplate';
 import { SettingsModal } from './components/SettingsModal';
@@ -36,6 +36,7 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [isResumeCollapsed, setIsResumeCollapsed] = useState(false);
+  const [isFixing, setIsFixing] = useState(false);
   const resumeRef = useRef<HTMLDivElement>(null);
 
   // Load saved data on mount
@@ -238,6 +239,39 @@ function App() {
       setShowChanges(true);
     } else {
       setShowChanges(false);
+    }
+  };
+
+  const handleFixIssues = async () => {
+    if (!generatedResume || !analysis) return;
+
+    setIsFixing(true);
+
+    try {
+      const result = await fixResumeWeaknesses(
+        generatedResume,
+        analysis.weaknesses,
+        analysis.improvements,
+        settings
+      );
+
+      // Save as new version
+      saveVersion(
+        result.resume,
+        'fixed',
+        'Fixed Resume',
+        'Improved Version',
+        result.fixes,
+        currentVersion?.atsKeywords || []
+      );
+
+      // Close analysis modal and show changes
+      setAnalysis(null);
+      setShowChanges(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fix issues');
+    } finally {
+      setIsFixing(false);
     }
   };
 
@@ -575,6 +609,8 @@ function App() {
         <AnalysisModal
           analysis={analysis}
           onClose={() => setAnalysis(null)}
+          onFix={handleFixIssues}
+          isFixing={isFixing}
         />
       )}
     </div>
