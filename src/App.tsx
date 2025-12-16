@@ -34,6 +34,7 @@ function App() {
   const [showChanges, setShowChanges] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
+  const [isResumeCollapsed, setIsResumeCollapsed] = useState(false);
   const resumeRef = useRef<HTMLDivElement>(null);
 
   // Load saved data on mount
@@ -189,9 +190,8 @@ function App() {
       );
 
       setActiveTab('preview');
-      if (result.changes && result.changes.length > 0) {
-        setShowChanges(true);
-      }
+      // Don't auto-open changes panel - let user open it manually
+      setShowChanges(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate tailored resume');
     } finally {
@@ -333,30 +333,46 @@ function App() {
         {/* Input Panel */}
         <div className={`panel input-panel no-print ${activeTab === 'input' ? 'active' : ''}`}>
           <div className="panel-inner">
-            {/* Resume Data Card */}
-            <div className="card">
-              <div className="card-header">
-                <h3>Your Resume Data</h3>
-                {resumeInput && (
-                  <button className="text-btn" onClick={handleClearData}>Clear</button>
+            {/* Resume Data Card - Collapsible */}
+            <div className={`card collapsible-card ${isResumeCollapsed ? 'collapsed' : ''}`}>
+              <div className="card-header" onClick={() => resumeInput && setIsResumeCollapsed(!isResumeCollapsed)} style={{ cursor: resumeInput ? 'pointer' : 'default' }}>
+                <div className="header-title">
+                  {resumeInput && (
+                    <span className={`collapse-icon ${isResumeCollapsed ? 'collapsed' : ''}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="6,9 12,15 18,9"></polyline>
+                      </svg>
+                    </span>
+                  )}
+                  <h3>Your Resume Data</h3>
+                  {resumeInput && isResumeCollapsed && (
+                    <span className="data-preview">Data saved ✓</span>
+                  )}
+                </div>
+                {resumeInput && !isResumeCollapsed && (
+                  <button className="text-btn" onClick={(e) => { e.stopPropagation(); handleClearData(); }}>Clear</button>
                 )}
               </div>
-              <textarea
-                value={resumeInput}
-                onChange={(e) => setResumeInput(e.target.value)}
-                placeholder="Paste all your resume details here...&#10;&#10;Include: contact info, work experience, skills, education, projects, certifications, etc."
-                rows={10}
-              />
-              <div className="card-footer">
-                <span className="saved-indicator">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17,21 17,13 7,13 7,21"></polyline>
-                    <polyline points="7,3 7,8 15,8"></polyline>
-                  </svg>
-                  Auto-saved
-                </span>
-              </div>
+              {!isResumeCollapsed && (
+                <>
+                  <textarea
+                    value={resumeInput}
+                    onChange={(e) => setResumeInput(e.target.value)}
+                    placeholder="Paste all your resume details here...&#10;&#10;Include: contact info, work experience, skills, education, projects, certifications, etc."
+                    rows={10}
+                  />
+                  <div className="card-footer">
+                    <span className="saved-indicator">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                        <polyline points="7,3 7,8 15,8"></polyline>
+                      </svg>
+                      Auto-saved
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Job Description Card */}
@@ -507,6 +523,33 @@ function App() {
                 />
               </div>
             </>
+          ) : isLoading ? (
+            <div className="skeleton-loader">
+              <div className="skeleton-resume">
+                <div className="skeleton-header">
+                  <div className="skeleton-line skeleton-title"></div>
+                  <div className="skeleton-line skeleton-subtitle"></div>
+                  <div className="skeleton-contact">
+                    <div className="skeleton-line skeleton-contact-item"></div>
+                    <div className="skeleton-line skeleton-contact-item"></div>
+                    <div className="skeleton-line skeleton-contact-item"></div>
+                  </div>
+                </div>
+                <div className="skeleton-section">
+                  <div className="skeleton-line skeleton-section-title"></div>
+                  <div className="skeleton-line skeleton-text"></div>
+                  <div className="skeleton-line skeleton-text"></div>
+                  <div className="skeleton-line skeleton-text short"></div>
+                </div>
+                <div className="skeleton-section">
+                  <div className="skeleton-line skeleton-section-title"></div>
+                  <div className="skeleton-line skeleton-text"></div>
+                  <div className="skeleton-line skeleton-text"></div>
+                  <div className="skeleton-line skeleton-text"></div>
+                  <div className="skeleton-line skeleton-text short"></div>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="empty-preview no-print">
               <div className="empty-icon">◈</div>
