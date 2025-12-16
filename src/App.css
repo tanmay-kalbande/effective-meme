@@ -215,6 +215,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   height: 100%;
+  position: relative;
 }
 
 .resume-wrapper {
@@ -1230,15 +1231,20 @@ body {
 }
 
 /* ========================================
-   CHANGES PANEL
+   CHANGES PANEL (Floating Overlay)
    ======================================== */
 
 .changes-panel {
-  background: var(--bg-tertiary);
-  border-bottom: 1px solid var(--border-color);
-  flex-shrink: 0;
-  max-height: 300px;
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 320px;
+  max-height: 400px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   overflow-y: auto;
+  z-index: 50;
 }
 
 .changes-header {
