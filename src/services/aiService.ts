@@ -291,3 +291,65 @@ Return ONLY the JSON object.`;
         return { companyName: 'Company', jobTitle: 'Position' };
     }
 }
+
+export interface FixedResumeResult {
+    resume: ResumeData;
+    fixes: string[];
+}
+
+export async function fixResumeWeaknesses(
+    resumeData: ResumeData,
+    weaknesses: string[],
+    improvements: string[],
+    settings: AISettings
+): Promise<FixedResumeResult> {
+    const prompt = `You are an expert resume optimizer. Fix ALL the weaknesses and implement ALL the improvements listed below.
+
+Current Resume:
+${JSON.stringify(resumeData, null, 2)}
+
+WEAKNESSES TO FIX:
+${weaknesses.map((w, i) => `${i + 1}. ${w}`).join('\n')}
+
+IMPROVEMENTS TO IMPLEMENT:
+${improvements.map((imp, i) => `${i + 1}. ${imp}`).join('\n')}
+
+IMPORTANT: Return a JSON object with:
+{
+  "fixes": ["Description of fix 1", "Description of fix 2", ...],
+  "resume": {
+    "fullName": "string",
+    "title": "string",
+    "email": "string",
+    "phone": "string",
+    "linkedin": "string",
+    "github": "string",
+    "portfolio": "string",
+    "location": "string",
+    "summary": "string (improved)",
+    "experiences": [{"jobTitle": "string", "company": "string", "duration": "string", "duties": ["string"]}],
+    "skills": {"languages": "string", "databases": "string", "mlAi": "string", "visualization": "string", "frameworks": "string", "bigData": "string"},
+    "projects": [{"title": "string", "description": "string"}],
+    "certifications": ["string"]
+  }
+}
+
+The "fixes" array should describe EACH fix you made corresponding to the weaknesses and improvements.
+Make meaningful improvements - don't just copy the original. Actually improve the content!
+
+Return ONLY the JSON object.`;
+
+    const response = await callAI(prompt, settings);
+    const jsonStr = extractJSON(response);
+
+    try {
+        const result = JSON.parse(jsonStr);
+        return {
+            resume: result.resume,
+            fixes: result.fixes || []
+        };
+    } catch (e) {
+        console.error('Failed to parse JSON:', jsonStr);
+        throw new Error('Failed to fix resume. Please try again.');
+    }
+}
