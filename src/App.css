@@ -27,6 +27,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: 'JetBrains Mono', monospace;
   background: var(--bg-primary);
@@ -41,8 +48,10 @@ body {
 
 .app {
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* ========================================
@@ -183,10 +192,12 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 0;
+  height: calc(100vh - 65px);
+  overflow: hidden;
 }
 
 .panel {
-  height: calc(100vh - 65px);
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -207,7 +218,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  min-height: calc(100vh - 65px);
+  height: 100%;
 }
 
 .resume-wrapper {
@@ -1503,20 +1514,18 @@ body {
 }
 
 /* ========================================
-   CUSTOM TOOLTIPS
+   CUSTOM TOOLTIPS (using data-tooltip to avoid browser tooltip)
    ======================================== */
 
-/* Style for all buttons with title attribute - custom tooltip */
-[title] {
+/* Style for all elements with data-tooltip attribute */
+[data-tooltip] {
   position: relative;
 }
 
-/* Override browser tooltip with custom styling */
-button[title]:hover::after,
-div[title]:hover::after {
-  content: attr(title);
+/* Custom tooltip styling */
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   padding: 0.5rem 0.75rem;
@@ -1526,50 +1535,61 @@ div[title]:hover::after {
   font-weight: 500;
   white-space: nowrap;
   border: 1px solid var(--border-light);
-  z-index: 1000;
+  z-index: 9999;
   pointer-events: none;
   opacity: 0;
   animation: tooltipFadeIn 0.2s ease forwards;
   animation-delay: 0.3s;
 }
 
-button[title]:hover::before,
-div[title]:hover::before {
+/* Arrow for tooltips */
+[data-tooltip]:hover::before {
   content: '';
   position: absolute;
-  bottom: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: var(--border-light);
-  z-index: 1001;
+  z-index: 10000;
   pointer-events: none;
   opacity: 0;
   animation: tooltipFadeIn 0.2s ease forwards;
   animation-delay: 0.3s;
+}
+
+/* Default: tooltip appears BELOW the element (safe for header elements) */
+[data-tooltip]:hover::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+[data-tooltip]:hover::before {
+  top: calc(100% + 2px);
+  bottom: auto;
+  border-bottom-color: var(--border-light);
+  border-top-color: transparent;
+}
+
+/* For elements in the main content area, show tooltip ABOVE */
+.panel [data-tooltip]:hover::after,
+.action-buttons [data-tooltip]:hover::after {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.panel [data-tooltip]:hover::before,
+.action-buttons [data-tooltip]:hover::before {
+  top: auto;
+  bottom: calc(100% + 2px);
+  border-top-color: var(--border-light);
+  border-bottom-color: transparent;
 }
 
 @keyframes tooltipFadeIn {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(4px);
   }
 
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
   }
-}
-
-/* For toolbar buttons, show tooltip below instead of above */
-.toolbar-right button[title]:hover::after {
-  bottom: auto;
-  top: calc(100% + 8px);
-}
-
-.toolbar-right button[title]:hover::before {
-  bottom: auto;
-  top: calc(100% + 2px);
-  border-top-color: transparent;
-  border-bottom-color: var(--border-light);
 }
