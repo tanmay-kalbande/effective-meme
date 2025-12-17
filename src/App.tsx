@@ -113,7 +113,9 @@ function App() {
     companyName?: string,
     jobTitle?: string,
     changes?: string[],
-    keywords?: string[]
+    keywords?: string[],
+    alignmentScore?: number,
+    alignmentDetails?: { matchingPoints: string[]; missingPoints: string[] }
   ) => {
     const name = type === 'tailored' && companyName
       ? `${companyName} - ${jobTitle || 'Position'}`
@@ -131,6 +133,8 @@ function App() {
       jobTitle,
       atsKeywords: keywords,
       changes,
+      alignmentScore,
+      alignmentDetails,
     };
 
     setVersions((prev) => [version, ...prev.slice(0, 19)]); // Keep last 20
@@ -200,7 +204,9 @@ function App() {
         result.companyName,
         result.jobTitle,
         result.changes,
-        keywords
+        keywords,
+        result.alignmentScore,
+        result.alignmentDetails
       );
 
       setActiveTab('preview');
