@@ -173,6 +173,11 @@ export interface TailoredResumeResult {
     changes: string[];
     companyName: string;
     jobTitle: string;
+    alignmentScore: number;
+    alignmentDetails: {
+        matchingPoints: string[];
+        missingPoints: string[];
+    };
 }
 
 export async function generateTailoredResume(
@@ -180,12 +185,17 @@ export async function generateTailoredResume(
     jobDescription: string,
     settings: AISettings
 ): Promise<TailoredResumeResult> {
-    const prompt = `You are an expert resume optimizer. Given the resume data and job description below, create an optimized version.
+    const prompt = `You are an expert resume optimizer. Given the resume data and job description below, create an optimized version AND calculate how well the resume aligns with the job.
 
 IMPORTANT: Return a JSON object with this EXACT structure:
 {
   "companyName": "string (extract from JD)",
   "jobTitle": "string (extract from JD)", 
+  "alignmentScore": number (0-100, how well the resume matches the job requirements),
+  "alignmentDetails": {
+    "matchingPoints": ["3-5 specific strengths that match job requirements"],
+    "missingPoints": ["2-4 gaps or areas where the resume could be stronger for this role"]
+  },
   "changes": ["string describing change 1", "string describing change 2", ...],
   "resume": {
     "fullName": "string",
@@ -204,10 +214,13 @@ IMPORTANT: Return a JSON object with this EXACT structure:
   }
 }
 
-The "changes" array should list 3-5 specific changes you made, like:
-- "Emphasized Python and ML skills to match data scientist requirements"
-- "Rephrased experience bullets to include 'cross-functional collaboration'"
-- "Updated summary to highlight relevant cloud experience"
+Alignment Score Guidelines:
+- 90-100%: Perfect match - candidate has all required skills and experience
+- 70-89%: Strong match - most requirements met, minor gaps
+- 50-69%: Moderate match - some relevant experience but notable gaps
+- Below 50%: Weak match - significant skill/experience gaps
+
+The "changes" array should list 3-5 specific changes you made.
 
 Resume Data:
 ${resumeData}
@@ -226,7 +239,9 @@ Return ONLY the JSON object, nothing else.`;
             resume: result.resume,
             changes: result.changes || [],
             companyName: result.companyName || 'Unknown Company',
-            jobTitle: result.jobTitle || 'Position'
+            jobTitle: result.jobTitle || 'Position',
+            alignmentScore: result.alignmentScore || 0,
+            alignmentDetails: result.alignmentDetails || { matchingPoints: [], missingPoints: [] }
         };
     } catch (e) {
         console.error('Failed to parse JSON:', jsonStr);
