@@ -48,6 +48,11 @@ export interface ResumeVersion {
   jobTitle?: string;
   atsKeywords?: string[];
   changes?: string[]; // AI-generated list of changes made
+  alignmentScore?: number; // 0-100 job match percentage
+  alignmentDetails?: {
+    matchingPoints: string[];
+    missingPoints: string[];
+  };
 }
 
 export interface AISettings {
