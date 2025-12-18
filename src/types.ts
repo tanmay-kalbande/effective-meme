@@ -77,7 +77,7 @@ export const DEFAULT_SETTINGS: AISettings = {
 
 // Model options for each provider
 export const GOOGLE_MODELS = [
-  { value: 'gemini-3-flash', label: 'Gemini 3 Flash' },
+  { value: 'gemini-3-flash-latest', label: 'Gemini 3 Flash' },
   { value: 'gemma-3-27b-it', label: 'Gemma 3 27B' },
 ];
 
@@ -109,3 +109,4 @@ export function formatTimestamp(ts: number): string {
   }
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
+
