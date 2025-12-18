@@ -70,7 +70,7 @@ export const DEFAULT_SETTINGS: AISettings = {
   googleApiKey: '',
   cerebrasApiKey: '',
   mistralApiKey: '',
-  googleModel: 'gemini-3-flash',
+  googleModel: 'gemini-3-flash-preview',
   cerebrasModel: 'qwen-3-235b',
   mistralModel: 'mistral-small-latest'
 };
@@ -109,5 +109,6 @@ export function formatTimestamp(ts: number): string {
   }
   return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
+
 
 
