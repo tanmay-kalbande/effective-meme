@@ -70,14 +70,14 @@ export const DEFAULT_SETTINGS: AISettings = {
   googleApiKey: '',
   cerebrasApiKey: '',
   mistralApiKey: '',
-  googleModel: 'gemini-2.0-flash',
+  googleModel: 'gemini-3-flash-preview',
   cerebrasModel: 'qwen-3-235b',
   mistralModel: 'mistral-small-latest'
 };
 
 // Model options for each provider
 export const GOOGLE_MODELS = [
-  { value: 'gemini-2.0-flash', label: 'Gemini Flash Latest' },
+  { value: 'gemini-3-flash-preview', label: 'Gemini 3 Flash Preview' },
   { value: 'gemma-3-27b-it', label: 'Gemma 3 27B' },
 ];
 
